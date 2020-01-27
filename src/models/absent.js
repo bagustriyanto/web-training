@@ -3,7 +3,6 @@ module.exports = (sequelize, DataTypes) => {
 	const absent = sequelize.define(
 		"absent",
 		{
-			id: DataTypes.BIGINT,
 			credential_id: {
 				type: DataTypes.BIGINT,
 				allowNull: false,

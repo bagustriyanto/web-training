@@ -3,7 +3,6 @@ module.exports = (sequelize, DataTypes) => {
 	const credentials = sequelize.define(
 		"credentials",
 		{
-			id: DataTypes.BIGINT,
 			username: DataTypes.STRING,
 			password: DataTypes.STRING,
 			salt: DataTypes.STRING,

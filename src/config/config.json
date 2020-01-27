@@ -19,5 +19,13 @@
 		"database": "database_production",
 		"host": "127.0.0.1",
 		"dialect": "mysql"
+	},
+	"token": {
+		"development": {
+			"issuer": "admin.saraya.nodejs",
+			"audience": "public.saraya",
+			"secret": "165110a0-c609-4203-9b30-605ac375df79",
+			"expiresIn": "30m"
+		}
 	}
 }
