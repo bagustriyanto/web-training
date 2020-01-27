@@ -3,6 +3,7 @@ const profiles = require("../../models").profiles
 const models = require("../../models/index")
 const tokenService = require("../auth/tokenService")
 const passwordUtil = require("../../util/password")
+const generalUtil = require("../../util/general")
 
 module.exports = {
 	login(req) {
@@ -60,7 +61,10 @@ module.exports = {
 				if (result) return true
 				else return false
 			})
-		const result = Promise.all([checkEmailExist, checkUsernameExist]).then(result => {
+		const verificationCode = generalUtil.generateVerificationCode().then(result => {
+			return result
+		})
+		return Promise.all([checkEmailExist, checkUsernameExist, verificationCode]).then(result => {
 			if (result[0]) {
 				throw new Error("Email already exist. please using another email")
 			} else if (result[1]) {
@@ -74,10 +78,11 @@ module.exports = {
 								.create({
 									username: req.body.username,
 									email: req.body.email,
-									status: 1,
+									status: 0,
 									salt: salt,
 									password: password,
 									public_user: 1,
+									verification_code: result[2],
 									createdBy: req.body.username
 								})
 								.then(credentialsModel => {
@@ -94,6 +99,36 @@ module.exports = {
 							throw err()
 						})
 					})
+				})
+			}
+		})
+	},
+	verification(req) {
+		const checkVerificationCode = credentials
+			.findOne({ where: { username: req.body.username, verification_code: req.body.verificationCode } })
+			.then(result => {
+				if (result) return true
+				else false
+			})
+		return Promise.all(checkVerificationCode).then(result => {
+			if (!result) {
+				throw Error("invalid verification code")
+			} else {
+				models.sequelize.transaction(t => {
+					return credentials
+						.update(
+							{
+								verification_code: null,
+								status: 1
+							},
+							{ where: { username: req.body.username } }
+						)
+						.then(result => {
+							return result
+						})
+						.catch(err => {
+							throw err
+						})
 				})
 			}
 		})
