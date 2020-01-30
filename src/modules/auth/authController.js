@@ -1,8 +1,10 @@
-const authService = require("./authService")
-const tokenService = require("./tokenService")
-const response = require("../../util/response")
 const status = require("http-status")
 const has = require("has-keys")
+const mustache = require("mustache")
+const response = require("../../util/response")
+
+const authService = require("./authService")
+const mailService = require("../mail/mailService")
 
 module.exports = {
 	async login(req, res) {
@@ -32,10 +34,6 @@ module.exports = {
 			.catch(err => {
 				res.status(status.BAD_REQUEST).json({ ...response, ...{ status: false, message: "register failed" } })
 			})
-	},
-	async testResponse(req, res) {
-		if (!has(req.body, ["username", "email", "full_name"]))
-			res.status(status.BAD_REQUEST).json({ ...response, ...{ status: false, message: "you must specify username, email and full name" } })
 	},
 	async verification(req, res) {
 		if (!has(req.body, ["username"])) res.status(status.BAD_REQUEST).json({ ...response, ...{ status: false, message: "you must specify username" } })

@@ -9,6 +9,7 @@ const cookieParser = require("cookie-parser")
 const cors = require("cors")
 const helmet = require("helmet")
 const jwt = require("./util/jwt")
+const path = require("path")
 
 const logger = require("./util/logger")
 
@@ -52,7 +53,6 @@ app.use("*", (req, res) => {
 // Assign express-jwt
 app.use(jwt())
 
-// Open Server on selected Port
-// app.listen(PORT, () => console.info("Server listening on port ", PORT))
+global.appRoot = path.resolve(__dirname)
 
 module.exports = app

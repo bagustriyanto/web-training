@@ -1,7 +1,9 @@
 const credentials = require("../../models").credentials
 const profiles = require("../../models").profiles
 const models = require("../../models/index")
+
 const tokenService = require("../auth/tokenService")
+
 const passwordUtil = require("../../util/password")
 const generalUtil = require("../../util/general")
 
@@ -92,6 +94,7 @@ module.exports = {
 											full_name: req.body.full_name
 										})
 										.then(() => {
+											this.sendEmailVerification(result[2], req.body.email)
 											return true
 										})
 								})
@@ -130,6 +133,18 @@ module.exports = {
 							throw err
 						})
 				})
+			}
+		})
+	},
+	sendEmailVerification(verification_code, email) {
+		fs.readFile(`${appRoot}/templates/registrationTemplate.html`, function(err, data) {
+			if (!err) {
+				try {
+					let render = mustache.render(data.toString(), { verification_code: verification_code })
+					mailService.sendEmail("Email Verification", "no-reply@bertugas.com", email, null, render)
+				} catch (error) {
+					throw error
+				}
 			}
 		})
 	}
