@@ -4,7 +4,6 @@ const authController = require("../auth/authController")
 
 router.post("/api/login", authController.login)
 router.get("/api/register", authController.register)
-router.get("/api/verification")
-router.get("/api/testResponse", authController.testResponse)
+router.get("/api/verification", authController.verification)
 
 module.exports = router

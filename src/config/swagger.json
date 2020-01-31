@@ -1,0 +1,95 @@
+{
+	"swagger": "2.0",
+	"info": {
+		"title": "Backend API",
+		"description": "dicoding challenge backend",
+		"version": "0.1"
+	},
+	"host": "http://localhost:3000",
+	"basePath": "/api",
+	"schemes": ["http", "https"],
+	"paths": {
+		"/login": {
+			"post": {
+				"tags": ["auth"],
+				"operationId": "login",
+				"summary": "application login",
+				"description": "application login for backoffice or public website",
+				"produces": ["application/json"],
+				"parameters": [
+					{
+						"in": "body",
+						"name": "username",
+						"required": true,
+						"type": "string"
+					},
+					{
+						"in": "body",
+						"name": "password",
+						"required": true,
+						"type": "string"
+					}
+				]
+			},
+			"responses": {
+				"200": {
+					"description": "ok"
+				}
+			}
+		},
+		"/register": {
+			"post": {
+				"tags": ["auth"],
+				"summary": "public user registration",
+				"description": "registration api, used by public user",
+				"produces": "application/json",
+				"parameters": [
+					{
+						"in": "body",
+						"name": "username",
+						"required": true,
+						"type": "string"
+					},
+					{
+						"in": "body",
+						"name": "password",
+						"description": "password min 8 character with combination a-z A-z 1-9",
+						"required": true,
+						"type": "string",
+						"example": "Pass123"
+					},
+					{
+						"in": "body",
+						"name": "email",
+						"required": true,
+						"type": "string",
+						"example": "anonim@mail.com"
+					}
+				]
+			}
+		},
+		"/verification": {
+			"post": {
+				"tags": ["auth"],
+				"summary": "public user verification",
+				"operationId": "verification",
+				"description": "verification api, used by public user",
+				"produces": "application/json",
+				"parameters": [
+					{
+						"in": "body",
+						"name": "username",
+						"required": true,
+						"type": "string"
+					},
+					{
+						"in": "body",
+						"name": "verification_code",
+						"required": true,
+						"type": "string"
+					}
+				]
+			}
+		}
+	}
+}
