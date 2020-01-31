@@ -22,18 +22,19 @@ module.exports = {
 			})
 	},
 	async register(req, res) {
-		if (!has(req.body, ["username", "email", "full_name"]))
-			res.status(status.BAD_REQUEST).json({ ...response, ...{ status: false, message: "you must specify username, email and full name" } })
-
-		authService
-			.register(req)
-			.then(data => {
-				let result = { ...response, ...{ status: true, message: "register success" } }
-				res.status(status.OK).json(result)
-			})
-			.catch(err => {
-				res.status(status.BAD_REQUEST).json({ ...response, ...{ status: false, message: "register failed" } })
-			})
+		if (!has(req.body, ["username", "email", "full_name", "password"])) {
+			res.status(status.BAD_REQUEST).send({ ...response, ...{ status: false, message: "you must specify username, email and full name" } })
+		} else {
+			authService
+				.register(req)
+				.then(() => {
+					let result = { ...response, ...{ status: true, message: "register success" } }
+					res.status(status.OK).json(result)
+				})
+				.catch(err => {
+					res.status(status.BAD_REQUEST).json({ ...response, ...{ status: false, message: err.message } })
+				})
+		}
 	},
 	async verification(req, res) {
 		if (!has(req.body, ["username"])) res.status(status.BAD_REQUEST).json({ ...response, ...{ status: false, message: "you must specify username" } })
@@ -41,7 +42,7 @@ module.exports = {
 		authService
 			.verification(req)
 			.then(() => {
-				let result = { ...response, ...{ status: true, message: "verification success" } }
+				let result = { ...response, ...{ status: true, message: "verification success " } }
 				res.status(status.OK).json(result)
 			})
 			.catch(err => {

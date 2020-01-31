@@ -1,8 +1,11 @@
 const credentials = require("../../models").credentials
-const profiles = require("../../models").profiles
+const profile = require("../../models").profile
 const models = require("../../models/index")
+const fs = require("fs")
+const mustache = require("mustache")
 
 const tokenService = require("../auth/tokenService")
+const mailService = require("../mail/mailService")
 
 const passwordUtil = require("../../util/password")
 const generalUtil = require("../../util/general")
@@ -45,7 +48,7 @@ module.exports = {
 			.findOne({
 				where: {
 					email: req.body.email,
-					status: true
+					status: false
 				}
 			})
 			.then(result => {
@@ -56,25 +59,24 @@ module.exports = {
 			.findOne({
 				where: {
 					username: req.body.username,
-					status: true
+					status: false
 				}
 			})
 			.then(result => {
 				if (result) return true
 				else return false
 			})
-		const verificationCode = generalUtil.generateVerificationCode().then(result => {
-			return result
-		})
-		return Promise.all([checkEmailExist, checkUsernameExist, verificationCode]).then(result => {
+
+		return Promise.all([checkEmailExist, checkUsernameExist]).then(result => {
 			if (result[0]) {
-				throw new Error("Email already exist. please using another email")
+				throw Error("Email already exist. please using another email")
 			} else if (result[1]) {
-				throw new Error("Username already exist. please using another username")
+				throw Error("Username already exist. please using another username")
 			} else {
-				passwordUtil.salt().then(salt => {
+				const verificationCode = generalUtil.generateVerificationCode()
+				return passwordUtil.salt().then(salt => {
 					let password = passwordUtil.passwordEncrypt(req.body.password, salt)
-					models.sequelize.transaction(t => {
+					return models.sequelize.transaction(t => {
 						return Promise.all([
 							credentials
 								.create({
@@ -84,22 +86,27 @@ module.exports = {
 									salt: salt,
 									password: password,
 									public_user: 1,
-									verification_code: result[2],
+									verification_code: verificationCode,
 									createdBy: req.body.username
 								})
 								.then(credentialsModel => {
-									profiles
+									return profile
 										.create({
-											credential_id: credentialsModel.get("id"),
+											credential_id: credentialsModel.id,
 											full_name: req.body.full_name
 										})
 										.then(() => {
-											this.sendEmailVerification(result[2], req.body.email)
-											return true
+											return credentialsModel
+										})
+										.catch(err => {
+											throw err
 										})
 								})
+								.then(credentialsModel => {
+									return this.sendEmailVerification(verificationCode, credentialsModel.email)
+								})
 						]).catch(err => {
-							throw err()
+							throw err
 						})
 					})
 				})
@@ -111,27 +118,34 @@ module.exports = {
 			.findOne({ where: { username: req.body.username, verification_code: req.body.verificationCode } })
 			.then(result => {
 				if (result) return true
-				else false
+				else return false
 			})
-		return Promise.all(checkVerificationCode).then(result => {
-			if (!result) {
-				throw Error("invalid verification code")
+			.catch(err => {
+				throw err
+			})
+		return Promise.all([checkVerificationCode]).then(result => {
+			if (!result[0]) {
+				throw Error("invalid verification code ")
 			} else {
-				models.sequelize.transaction(t => {
-					return credentials
-						.update(
-							{
-								verification_code: null,
-								status: 1
-							},
-							{ where: { username: req.body.username } }
-						)
-						.then(result => {
-							return result
-						})
-						.catch(err => {
-							throw err
-						})
+				return Promise.all([
+					models.sequelize.transaction(t => {
+						return credentials
+							.update(
+								{
+									verification_code: null,
+									status: 1
+								},
+								{ where: { username: req.body.username } }
+							)
+							.then(result => {
+								return result
+							})
+							.catch(err => {
+								throw err
+							})
+					})
+				]).catch(err => {
+					throw err
 				})
 			}
 		})
