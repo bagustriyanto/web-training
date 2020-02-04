@@ -13,12 +13,12 @@ module.exports = {
 
 		authService
 			.login(req)
-			.then(r => {
+			.then(data => {
 				let result = { ...response, ...{ status: true, message: "login success", data: data.user, token: data.token } }
 				res.status(status.OK).json(result)
 			})
 			.catch(err => {
-				res.status(status.BAD_REQUEST).json({ ...response, ...{ status: false, message: "register failed" } })
+				res.status(status.BAD_REQUEST).json({ ...response, ...{ status: false, message: err.message } })
 			})
 	},
 	async register(req, res) {

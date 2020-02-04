@@ -15,15 +15,14 @@ module.exports = {
 		const result = Promise.all([
 			credentials.findOne({
 				where: {
-					email: req.body.email,
+					username: req.body.username,
 					status: true
-				},
-				attributes: { exclude: ["password", "salt"] }
+				}
 			})
 		])
 			.then(result => {
 				let data = result[0]
-				let currentPass = general.passwordEncrypt(req.body.password, data.salt)
+				let currentPass = passwordUtil.passwordEncrypt(req.body.password, data.salt)
 
 				if (currentPass === data.password) {
 					return data
@@ -32,7 +31,10 @@ module.exports = {
 				}
 			})
 			.then(result => {
-				let token = tokenService.generateToken(result.username, roleResult.role.name, result.id)
+				let token = tokenService.generateToken(result.username, result.id)
+				result.password = null
+				result.salt = null
+
 				return {
 					user: result,
 					token: token

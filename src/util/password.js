@@ -9,6 +9,7 @@ module.exports = {
 		})
 	},
 	passwordEncrypt(password, salt) {
+		console.log(`${password} - ${salt}`)
 		let byteSalt = new Buffer(salt, "base64")
 		var derivedKey = pbkdf2.pbkdf2Sync(password, byteSalt, 10000, 32, "sha1")
 
