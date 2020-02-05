@@ -13,6 +13,9 @@ const path = require("path")
 const swaggerUI = require("swagger-ui-express")
 const swaggerDoc = require("./config/swagger.json")
 const logger = require("./util/logger")
+const session = require("express-session")
+const env = process.env.NODE_ENV || "development"
+const config = require("../config/config.json").token[env]
 
 // Load .env Enviroment Variables to process.env
 
@@ -22,6 +25,26 @@ const { PORT } = process.env
 
 // Instantiate an Express Application
 const app = express()
+
+// configure express session
+app.use(
+	session({
+		secret: config.secret,
+		resave: false,
+		saveUninitialized: true,
+		cookie: {
+			maxAge: 1800000
+		}
+	})
+)
+
+app.use(function(req, res, next) {
+	if (!req.session.views) {
+		req.session.views = {}
+	}
+
+	next()
+})
 
 // Configure Express App Instance
 app.use(express.json({ limit: "50mb" }))

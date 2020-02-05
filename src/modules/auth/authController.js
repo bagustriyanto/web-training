@@ -1,10 +1,8 @@
 const status = require("http-status")
 const has = require("has-keys")
-const mustache = require("mustache")
 const response = require("../../util/response")
 
 const authService = require("./authService")
-const mailService = require("../mail/mailService")
 
 module.exports = {
 	async login(req, res) {
@@ -15,6 +13,7 @@ module.exports = {
 			.login(req)
 			.then(data => {
 				let result = { ...response, ...{ status: true, message: "login success", data: data.user, token: data.token } }
+				req.session.views.userSession = data.user
 				res.status(status.OK).json(result)
 			})
 			.catch(err => {
