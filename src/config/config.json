@@ -4,7 +4,11 @@
 		"password": null,
 		"database": "dicoding-challenge",
 		"host": "127.0.0.1",
-		"dialect": "mysql"
+		"dialect": "mysql",
+		"dialectOptions": {
+			"useUTC": false
+		},
+		"timezone": "+07:00"
 	},
 	"test": {
 		"username": "root",
@@ -18,7 +22,11 @@
 		"password": null,
 		"database": "database_production",
 		"host": "127.0.0.1",
-		"dialect": "mysql"
+		"dialect": "mysql",
+		"dialectOptions": {
+			"useUTC": false
+		},
+		"timezone": "+07:00"
 	},
 	"token": {
 		"development": {

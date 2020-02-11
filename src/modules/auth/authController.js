@@ -12,8 +12,9 @@ module.exports = {
 		authService
 			.login(req)
 			.then(data => {
-				let result = { ...response, ...{ status: true, message: "login success", data: data.user, token: data.token } }
 				req.session.views.userSession = data.user
+				let result = { ...response, ...{ status: true, message: "login success", data: req.session.views.userSession, token: data.token } }
+
 				res.status(status.OK).json(result)
 			})
 			.catch(err => {

@@ -15,10 +15,11 @@ const swaggerDoc = require("./config/swagger.json")
 const logger = require("./util/logger")
 const session = require("express-session")
 const env = process.env.NODE_ENV || "development"
-const config = require("../config/config.json").token[env]
+const config = require("./config/config.json").token[env]
+const sequelize = require("./models/index").sequelize
+const sequelizeStore = require("connect-session-sequelize")(session.Store)
 
 // Load .env Enviroment Variables to process.env
-
 require("mandatoryenv").load(["DB_HOST", "DB_DATABASE", "DB_USER", "DB_PASSWORD", "PORT", "SECRET"])
 
 const { PORT } = process.env
@@ -27,13 +28,28 @@ const { PORT } = process.env
 const app = express()
 
 // configure express session
+let store = new sequelizeStore({
+	db: sequelize,
+	table: "session",
+	checkExpirationInterval: 30 * 60 * 1000,
+	expiration: 30 * 60 * 1000,
+	extendDefaultFields: function(defaults, session) {
+		return {
+			data: defaults.data,
+			expires: defaults.expires,
+			userId: session.views.userSession.username
+		}
+	}
+})
+store.sync()
 app.use(
 	session({
 		secret: config.secret,
+		store: store,
 		resave: false,
-		saveUninitialized: true,
+		saveUninitialized: false,
 		cookie: {
-			maxAge: 1800000
+			maxAge: 30 * 60 * 1000
 		}
 	})
 )
@@ -60,19 +76,14 @@ app.use(cookieParser())
 app.use(cors())
 app.use(helmet())
 
+// Assign express-jwt
+app.use(jwt())
+
 // Assign Routes
 app.use("/", require("./routes/router.js"))
 
 // Handle errors
 app.use(errorHandler())
-
-// Handle not valid route
-app.use("*", (req, res) => {
-	res.status(404).json({ status: false, message: "Endpoint Not Found" })
-})
-
-// Assign express-jwt
-app.use(jwt())
 
 global.appRoot = path.resolve(__dirname)
 
