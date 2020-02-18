@@ -18,6 +18,7 @@ const env = process.env.NODE_ENV || "development"
 const config = require("./config/config.json").token[env]
 const sequelize = require("./models/index").sequelize
 const sequelizeStore = require("connect-session-sequelize")(session.Store)
+const moment = require("moment")
 
 // Load .env Enviroment Variables to process.env
 require("mandatoryenv").load(["DB_HOST", "DB_DATABASE", "DB_USER", "DB_PASSWORD", "PORT", "SECRET"])
@@ -37,7 +38,7 @@ let store = new sequelizeStore({
 		return {
 			data: defaults.data,
 			expires: defaults.expires,
-			userId: session.views.userSession.username
+			userId: Object.keys(session.views).length === 0 ? "" : session.views.userSession.username
 		}
 	}
 })
