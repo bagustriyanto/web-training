@@ -14,6 +14,9 @@ module.exports = (sequelize, DataTypes) => {
 	)
 	class_schedule.associate = function(models) {
 		// associations can be defined here
+		class_schedule.belongsTo(models.master_class, {
+			foreignKey: "class_id"
+		})
 	}
 	return class_schedule
 }

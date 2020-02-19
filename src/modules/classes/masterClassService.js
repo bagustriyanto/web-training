@@ -109,14 +109,15 @@ module.exports = {
 	},
 	findAllMasterClass(req) {
 		let whereClause = {}
-		if (req.body.class_name !== undefined || req.body.class_name !== "") {
+		if (req.body.class_name !== undefined || req.query.class_name !== "") {
 			whereClause.where = {
-				class_name: { [Op.iLike]: `%${req.body.class_name}%` }
+				class_name: { [Op.iLike]: `%${req.query.class_name}%` }
 			}
 		}
 
-		limit = req.query.limit === undefined ? limit : req.query.limit
-		page = req.query.page === undefined ? page + 1 : req.query.page + 1
+		limitPage = req.query.limit === undefined ? limitPage : parseInt(req.query.limit)
+		page = req.query.page === undefined ? page : parseInt(req.query.page) - 1
+		let returnPage = page === 0 ? 1 : req.query.page
 
 		return masterClass
 			.findAndCountAll({
@@ -129,7 +130,7 @@ module.exports = {
 					total: result.count,
 					items: result.rows,
 					limit: limit,
-					pages: page
+					pages: returnPage
 				}
 			})
 	},

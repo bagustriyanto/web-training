@@ -1,5 +1,5 @@
 const status = require("http-status")
-const { body, param, validationResult } = require("express-validator")
+const { body, param, query, validationResult } = require("express-validator")
 
 const classService = require("./classService")
 const response = require("../../util/response")
@@ -39,10 +39,24 @@ module.exports = {
 			res.status(status.UNPROCESSABLE_ENTITY).json({ ...response, ...{ status: false, message: errors } })
 		}
 	},
-	getById(req, res) {},
-	getAll(req, res) {
+	getById(req, res) {
 		classService
-			.getSchedule()
+			.getScheduleById(req)
+			.then(result => {
+				res.status(status.OK).json({ ...response, ...{ message: "fetch success", status: true, data: result } })
+			})
+			.catch(err => {
+				res.status(status.BAD_REQUEST).json({ ...response, ...{ status: false, message: err.message } })
+			})
+	},
+	getAll(req, res) {
+		const errors = validationResult(req)
+		if (!errors.isEmpty()) {
+			res.status(status.UNPROCESSABLE_ENTITY).json({ ...response, ...{ status: false, message: errors } })
+		}
+
+		classService
+			.getSchedule(req)
 			.then(result => {
 				res.status(status.OK).json({ ...response, ...{ message: "fetch success", status: true, data: result } })
 			})
@@ -64,6 +78,39 @@ module.exports = {
 			body("status", "status is boolean type").isBoolean()
 		]
 		switch (method) {
+			case "get":
+				result = [
+					query("limit")
+						.isNumeric()
+						.withMessage("only number to fill in")
+						.not()
+						.isEmpty()
+						.withMessage("limit not found")
+						.custom(value => {
+							if (parseInt(value) <= 0) {
+								return false
+							}
+
+							return true
+						})
+						.withMessage("limit can't less than equals to 0"),
+					query("page")
+						.isNumeric()
+						.withMessage("only number to fill in")
+						.not()
+						.isEmpty()
+						.withMessage("page not found")
+						.custom(value => {
+							if (parseInt(value) <= 0) {
+								return false
+							}
+
+							return true
+						})
+						.withMessage("limit can't less than equals to 0")
+				]
+
+				break
 			case "put":
 				result.push(param("id", "id doesn't exist").exists())
 				break

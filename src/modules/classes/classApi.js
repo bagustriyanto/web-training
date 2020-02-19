@@ -12,7 +12,7 @@ router.put("/api/master_class/:id", masterClassController.validate("put"), maste
 router.delete("/api/master_class/:id", masterClassController.validate("delete"), masterClassController.delete)
 
 //class schedule
-router.get("/api/class", classController.getAll)
+router.get("/api/class", classController.validate("get"), classController.getAll)
 router.get("/api/class/:id", classController.getById)
 router.post("/api/class", classController.validate("post"), classController.create)
 router.put("/api/class/:id", classController.validate("put"), classController.update)

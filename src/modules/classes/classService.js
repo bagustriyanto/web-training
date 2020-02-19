@@ -1,6 +1,10 @@
 const model = require("../../models/index")
 const class_schedule = require("../../models").class_schedule
+const master_class = require("../../models").master_class
 const Op = require("../../models/index").Sequelize.Op
+
+let limitPage = 10
+let page = 0
 
 module.exports = {
 	createSchedule(req) {
@@ -224,5 +228,37 @@ module.exports = {
 			}
 		})
 	},
-	getSchedule(req) {}
+	getSchedule(req) {
+		let whereClause = {}
+		if (req.query.search !== "") {
+			whereClause.where = {
+				class_name: { [Op.iLike]: `%${req.query.class_name}%` }
+			}
+		}
+
+		limitPage = req.query.limit === undefined ? limitPage : parseInt(req.query.limit)
+		page = req.query.page === undefined ? page : parseInt(req.query.page) - 1
+		let returnPage = page === 0 ? 1 : req.query.page
+
+		return class_schedule
+			.findAndCountAll({
+				offset: page,
+				limit: limitPage,
+				include: [
+					{
+						model: master_class,
+						attributes: ["class_name", "class_code"],
+						whereClause
+					}
+				]
+			})
+			.then(result => {
+				return {
+					total: result.count,
+					items: result.rows,
+					limit: limitPage,
+					pages: returnPage
+				}
+			})
+	}
 }
