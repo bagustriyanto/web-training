@@ -27,7 +27,7 @@ module.exports = {
 		classService
 			.updateSchedule(req)
 			.then(result => {
-				res.status(status.OK).json({ ...response, ...{ message: "update success", data: result, status: true } })
+				res.status(status.OK).json({ ...response, ...{ message: "update success", status: true } })
 			})
 			.catch(err => {
 				res.status(status.BAD_REQUEST).json({ ...response, ...{ status: false, message: err.message } })
@@ -38,6 +38,15 @@ module.exports = {
 		if (!errors.isEmpty()) {
 			res.status(status.UNPROCESSABLE_ENTITY).json({ ...response, ...{ status: false, message: errors } })
 		}
+
+		classService
+			.deleteSchedule(req)
+			.then(result => {
+				res.status(status.OK).json({ ...response, ...{ message: "delete success", status: true } })
+			})
+			.catch(err => {
+				res.status(status.BAD_REQUEST).json({ ...response, ...{ status: false, message: err.message } })
+			})
 	},
 	getById(req, res) {
 		classService

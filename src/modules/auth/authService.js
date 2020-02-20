@@ -3,6 +3,7 @@ const profile = require("../../models").profile
 const models = require("../../models/index")
 const fs = require("fs")
 const mustache = require("mustache")
+const moment = require("moment")
 
 const tokenService = require("../auth/tokenService")
 const mailService = require("../mail/mailService")
@@ -34,6 +35,14 @@ module.exports = {
 				let token = tokenService.generateToken(result.username, result.id)
 				result.password = null
 				result.salt = null
+
+				credentials.update(
+					{
+						last_login_ip: req.connection.remoteAddress,
+						last_login: moment().format("YYYY-MM-DD HH:mm:ss")
+					},
+					{ where: { id: result.id } }
+				)
 
 				return {
 					user: result,

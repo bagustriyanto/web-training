@@ -11,8 +11,15 @@ module.exports = (sequelize, DataTypes) => {
 					key: "id"
 				}
 			},
+			schedule_id: {
+				type: DataTypes.BIGINT,
+				allowNull: false,
+				references: {
+					model: "class_schedule",
+					key: "id"
+				}
+			},
 			absent_time: DataTypes.DATE,
-			type: DataTypes.INTEGER,
 			createdBy: DataTypes.STRING,
 			updatedBy: DataTypes.STRING
 		},
@@ -20,6 +27,9 @@ module.exports = (sequelize, DataTypes) => {
 	)
 	absent.associate = function(models) {
 		// associations can be defined here
+		absent.belongsTo(models.class_schedule, {
+			foreignKey: "schedule_id"
+		})
 	}
 	return absent
 }

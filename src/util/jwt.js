@@ -8,7 +8,7 @@ function jwt() {
 		audience: config.audience,
 		issuer: config.issuer
 	}).unless({
-		path: ["/api/login", "/api/register", "/api/register"]
+		path: ["/api/login", "/api/register", "/api/verification"]
 	})
 }
 

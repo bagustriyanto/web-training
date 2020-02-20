@@ -17,6 +17,9 @@ module.exports = (sequelize, DataTypes) => {
 		class_schedule.belongsTo(models.master_class, {
 			foreignKey: "class_id"
 		})
+		// class_schedule.belongsTo(models.absent, {
+		// 	foreignKey: "schedule_id"
+		// })
 	}
 	return class_schedule
 }
