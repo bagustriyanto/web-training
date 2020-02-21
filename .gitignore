@@ -63,3 +63,5 @@ node_modules
 
 *.code-workspace
 *.vscode
+
+src/public

@@ -232,7 +232,7 @@ module.exports = {
 		let whereClause = {}
 		if (req.query.search !== "") {
 			whereClause.where = {
-				class_name: { [Op.iLike]: `%${req.query.class_name}%` }
+				class_name: { [Op.like]: `%${req.query.class_name}%` }
 			}
 		}
 

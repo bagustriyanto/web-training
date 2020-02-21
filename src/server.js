@@ -18,7 +18,8 @@ const env = process.env.NODE_ENV || "development"
 const config = require("./config/config.json").token[env]
 const sequelize = require("./models/index").sequelize
 const sequelizeStore = require("connect-session-sequelize")(session.Store)
-const moment = require("moment")
+const fs = require("fs")
+const fileUpload = require("express-fileupload")
 
 // Load .env Enviroment Variables to process.env
 require("mandatoryenv").load(["DB_HOST", "DB_DATABASE", "DB_USER", "DB_PASSWORD", "PORT", "SECRET"])
@@ -27,6 +28,7 @@ const { PORT } = process.env
 
 // Instantiate an Express Application
 const app = express()
+app.use(express.static(path.join(__dirname, "/public/")))
 
 // configure express session
 let store = new sequelizeStore({
@@ -73,6 +75,9 @@ app.use("/api-docs", swaggerUI.serve, swaggerUI.setup(swaggerDoc))
 // Configure custom logger middleware
 app.use(logger.dev, logger.combined)
 
+// use express fileupload
+app.use(fileUpload())
+
 app.use(cookieParser())
 app.use(cors())
 app.use(helmet())
@@ -85,6 +90,14 @@ app.use("/", require("./routes/router.js"))
 
 // Handle errors
 app.use(errorHandler())
+
+// define upload folder
+if (!fs.existsSync(`${__dirname}/public/upload`)) {
+	fs.mkdirSync(`${__dirname}/public`)
+	fs.mkdirSync(`${__dirname}/public/upload`)
+	fs.mkdirSync(`${__dirname}/public/upload/image`)
+	fs.mkdirSync(`${__dirname}/public/upload/file`)
+}
 
 global.appRoot = path.resolve(__dirname)
 

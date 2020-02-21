@@ -12,5 +12,6 @@ router.use("/", function(req, res, next) {
 router.use(require("../modules/classes/classApi"))
 router.use(require("../modules/auth/authApi"))
 router.use(require("../modules/absents/absentsApi"))
+router.use(require("../modules/files_sharing/fileSharingApi"))
 
 module.exports = router
