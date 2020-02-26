@@ -2,7 +2,7 @@ const model = require("../../models/index")
 const masterClass = require("../../models").master_class
 const Op = require("../../models").Sequelize.Op
 
-let limit = 10
+let limitPage = 10
 let page = 0
 
 module.exports = {
@@ -108,28 +108,21 @@ module.exports = {
 		})
 	},
 	findAllMasterClass(req) {
-		let whereClause = {}
-		if (req.body.class_name !== undefined || req.query.class_name !== "") {
-			whereClause.where = {
-				class_name: { [Op.like]: `%${req.query.class_name}%` }
-			}
-		}
-
 		limitPage = req.query.limit === undefined ? limitPage : parseInt(req.query.limit)
 		page = req.query.page === undefined ? page : parseInt(req.query.page) - 1
 		let returnPage = page === 0 ? 1 : req.query.page
 
 		return masterClass
 			.findAndCountAll({
-				whereClause,
-				limit: limit,
+				where: req.query.class_name !== "" ? { class_name: { [Op.like]: `%${req.query.class_name}%` } } : {},
+				limit: limitPage,
 				offset: page
 			})
 			.then(result => {
 				return {
 					total: result.count,
 					items: result.rows,
-					limit: limit,
+					limit: limitPage,
 					pages: returnPage
 				}
 			})

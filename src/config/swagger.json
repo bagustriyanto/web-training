@@ -52,6 +52,12 @@
 					},
 					{
 						"in": "body",
+						"name": "full_name",
+						"required": true,
+						"type": "string"
+					},
+					{
+						"in": "body",
 						"name": "password",
 						"description": "password min 8 character with combination a-z A-z 1-9",
 						"required": true,
@@ -87,6 +93,458 @@
 						"name": "verification_code",
 						"required": true,
 						"type": "string"
+					}
+				]
+			}
+		},
+		"/master_class": {
+			"get": {
+				"tags": ["master class"],
+				"summary": "get all master class",
+				"description": "user can use query parameter for filtering master class",
+				"parameters": [
+					{
+						"in": "query",
+						"name": "class_name",
+						"required": false,
+						"schema": {
+							"type": "string",
+							"example": "kelas javascript"
+						}
+					},
+					{
+						"in": "query",
+						"name": "limit",
+						"required": true,
+						"schema": {
+							"type": "integer",
+							"minimum": 5,
+							"example": 10
+						}
+					},
+					{
+						"in": "query",
+						"name": "page",
+						"required": true,
+						"schema": {
+							"type": "integer",
+							"minimum": 1,
+							"example": 1
+						}
+					}
+				]
+			},
+			"post": {
+				"tags": ["master class"],
+				"summary": "create master class",
+				"produces": "application/json",
+				"parameters": [
+					{
+						"in": "body",
+						"name": "class_name",
+						"required": true,
+						"type": "string"
+					},
+					{
+						"in": "body",
+						"name": "class_code",
+						"required": true,
+						"type": "string"
+					},
+					{
+						"in": "body",
+						"name": "status",
+						"required": true,
+						"type": "boolean"
+					}
+				]
+			}
+		},
+		"/master_class/{id}": {
+			"get": {
+				"tags": ["master class"],
+				"summary": "get master class by id",
+				"description": "user can use this api to get single data of master class",
+				"parameters": [
+					{
+						"in": "path",
+						"name": "id",
+						"required": true,
+						"schema": {
+							"type": "integer",
+							"example": "1"
+						}
+					}
+				]
+			},
+			"put": {
+				"tags": ["master class"],
+				"summary": "update master class",
+				"produces": "application/json",
+				"parameters": [
+					{
+						"in": "body",
+						"name": "class_name",
+						"required": true,
+						"type": "string"
+					},
+					{
+						"in": "body",
+						"name": "class_code",
+						"required": true,
+						"type": "string"
+					},
+					{
+						"in": "body",
+						"name": "status",
+						"required": true,
+						"type": "boolean"
+					}
+				]
+			},
+			"delete": {
+				"tags": ["master class"],
+				"summary": "delete master class by id",
+				"parameters": [
+					{
+						"in": "path",
+						"name": "id",
+						"required": true,
+						"schema": {
+							"type": "integer",
+							"example": "1"
+						}
+					}
+				]
+			}
+		},
+		"/class": {
+			"get": {
+				"tags": ["class schedule"],
+				"summary": "get all class schedule",
+				"description": "user can use query parameter for filtering class",
+				"parameters": [
+					{
+						"in": "query",
+						"name": "class_name",
+						"required": false,
+						"schema": {
+							"type": "string",
+							"example": "kelas javascript"
+						}
+					},
+					{
+						"in": "query",
+						"name": "limit",
+						"required": true,
+						"schema": {
+							"type": "integer",
+							"minimum": 5,
+							"example": 10
+						}
+					},
+					{
+						"in": "query",
+						"name": "page",
+						"required": true,
+						"schema": {
+							"type": "integer",
+							"minimum": 1,
+							"example": 1
+						}
+					}
+				]
+			},
+			"post": {
+				"tags": ["class schedule"],
+				"summary": "create class schedule",
+				"produces": "application/json",
+				"parameters": [
+					{
+						"in": "body",
+						"name": "class_id",
+						"required": true,
+						"type": "integer"
+					},
+					{
+						"in": "body",
+						"name": "start_time",
+						"required": true,
+						"type": "string"
+					},
+					{
+						"in": "body",
+						"name": "end_time",
+						"required": true,
+						"type": "string"
+					},
+					{
+						"in": "body",
+						"name": "status",
+						"required": true,
+						"type": "boolean"
+					}
+				]
+			}
+		},
+		"/class/{id}": {
+			"get": {
+				"tags": ["class schedule"],
+				"summary": "get class by id",
+				"description": "user can use this api to get single data of class",
+				"parameters": [
+					{
+						"in": "path",
+						"name": "id",
+						"required": true,
+						"schema": {
+							"type": "integer",
+							"example": "1"
+						}
+					}
+				]
+			},
+			"put": {
+				"tags": ["class schedule"],
+				"summary": "update class",
+				"produces": "application/json",
+				"parameters": [
+					{
+						"in": "body",
+						"name": "class_id",
+						"required": true,
+						"type": "integer"
+					},
+					{
+						"in": "body",
+						"name": "start_time",
+						"required": true,
+						"type": "string"
+					},
+					{
+						"in": "body",
+						"name": "end_time",
+						"required": true,
+						"type": "string"
+					},
+					{
+						"in": "body",
+						"name": "status",
+						"required": true,
+						"type": "boolean"
+					}
+				]
+			},
+			"delete": {
+				"tags": ["class schedule"],
+				"summary": "delete class by id",
+				"parameters": [
+					{
+						"in": "path",
+						"name": "id",
+						"required": true,
+						"schema": {
+							"type": "integer",
+							"example": "1"
+						}
+					}
+				]
+			}
+		},
+		"/absent": {
+			"get": {
+				"tags": ["absent"],
+				"summary": "get absent",
+				"description": "user can use query parameter for filtering absent",
+				"parameters": [
+					{
+						"in": "query",
+						"name": "username",
+						"required": false,
+						"schema": {
+							"type": "string",
+							"example": "dicodinguser"
+						}
+					},
+					{
+						"in": "query",
+						"name": "class_name",
+						"required": false,
+						"schema": {
+							"type": "string",
+							"example": "kelas javascript"
+						}
+					},
+					{
+						"in": "query",
+						"name": "limit",
+						"required": true,
+						"schema": {
+							"type": "integer",
+							"minimum": 5,
+							"example": 10
+						}
+					},
+					{
+						"in": "query",
+						"name": "page",
+						"required": true,
+						"schema": {
+							"type": "integer",
+							"minimum": 1,
+							"example": 1
+						}
+					}
+				]
+			},
+			"post": {
+				"tags": ["absent"],
+				"summary": "create absent"
+			}
+		},
+		"/absent/history": {
+			"get": {
+				"tags": ["absent"],
+				"summary": "get absent history",
+				"description": "user can use query parameter for filtering absent history",
+				"parameters": [
+					{
+						"in": "query",
+						"name": "username",
+						"required": false,
+						"schema": {
+							"type": "string",
+							"example": "dicodinguser"
+						}
+					},
+					{
+						"in": "query",
+						"name": "class_name",
+						"required": false,
+						"schema": {
+							"type": "string",
+							"example": "kelas javascript"
+						}
+					},
+					{
+						"in": "query",
+						"name": "limit",
+						"required": true,
+						"schema": {
+							"type": "integer",
+							"minimum": 5,
+							"example": 10
+						}
+					},
+					{
+						"in": "query",
+						"name": "page",
+						"required": true,
+						"schema": {
+							"type": "integer",
+							"minimum": 1,
+							"example": 1
+						}
+					}
+				]
+			}
+		},
+		"/file": {
+			"get": {
+				"tags": ["file sharing"],
+				"summary": "get all file",
+				"description": "user can use query parameter for filtering file data",
+				"parameters": [
+					{
+						"in": "query",
+						"name": "username",
+						"required": false,
+						"schema": {
+							"type": "string",
+							"example": "dicodinguser"
+						}
+					},
+					{
+						"in": "query",
+						"name": "class_name",
+						"required": false,
+						"schema": {
+							"type": "string",
+							"example": "kelas javascript"
+						}
+					},
+					{
+						"in": "query",
+						"name": "limit",
+						"required": true,
+						"schema": {
+							"type": "integer",
+							"minimum": 5,
+							"example": 10
+						}
+					},
+					{
+						"in": "query",
+						"name": "page",
+						"required": true,
+						"schema": {
+							"type": "integer",
+							"minimum": 1,
+							"example": 1
+						}
+					}
+				]
+			},
+			"post": {
+				"tags": ["file sharing"],
+				"summary": "upload single file",
+				"consumes": "multipart/form-data",
+				"parameters": [
+					{
+						"in": "formData",
+						"name": "class_id",
+						"type": "integer",
+						"required": true
+					},
+					{
+						"in": "formData",
+						"name": "file",
+						"type": "file",
+						"required": true
+					}
+				]
+			}
+		},
+		"/file/download/{id}": {
+			"get": {
+				"tags": ["file sharing"],
+				"summary": "download single file",
+				"parameters": [
+					{
+						"in": "path",
+						"name": "id",
+						"required": true,
+						"schema": {
+							"type": "integer",
+							"example": "1"
+						}
+					}
+				]
+			}
+		},
+		"/file/{id}": {
+			"delete": {
+				"tags": ["file sharing"],
+				"summary": "delete single file",
+				"parameters": [
+					{
+						"in": "path",
+						"name": "id",
+						"required": true,
+						"schema": {
+							"type": "integer",
+							"example": "1"
+						}
 					}
 				]
 			}
